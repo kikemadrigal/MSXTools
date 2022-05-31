@@ -11,32 +11,32 @@ public class CompressManager {
 	
 	// Cada entrada RLE de 16 bits consta de dos partes: un contador (1 byte) y un valor (1 byte)
 	// Básicamente codificas el número de veces que un valor dado se repite en posiciones contiguas
-	public ArrayList<String> compress2digits(String text) {
+	public ArrayList<String> compress2Digits(String text) {
 		ArrayList<String> arrayList=new ArrayList<String>();
 		String content="";
 		String tempCharacter="";	
 		String character="";
 		String stringCharCount="00";
 		int charCount=0;
-		int letra=0;
+		int letter=0;
 		//Obtenemos un array con las líneas
-		String[] lineas=text.split("\n");
+		String[] lines=text.split("\n");
 		//Por cada línea
-		for (String linea: lineas) {
+		for (String line: lines) {
 			//Vamos recorriendo de 2 en 2 letras del string
-			for (int textIndex = 0;textIndex< linea.length();textIndex=textIndex+2) {
+			for (int textIndex = 0;textIndex< line.length();textIndex=textIndex+2) {
 				//Solo trabajaremos con los textos pares
-				if ((linea.length() % 2)==0) { 
+				if ((line.length() % 2)==0) { 
 					//Obtenemos los 2 dígitos
-					character=linea.substring(textIndex,textIndex+2);
+					character=line.substring(textIndex,textIndex+2);
 					//Si los dígitos son los anteriores aumentamos el contador de repeticiones (charCount)
 					if (tempCharacter.equals(character)) {		
 						charCount++;
 						if (charCount<9) stringCharCount="0"+String.valueOf(charCount);
 						else stringCharCount=String.valueOf(charCount);
 						//Quitamos la parte antigua del string (por ejemplo:0013 ya que ahora es 0113)
-						letra -= 4;
-						content=content.substring(0,letra);
+						letter -= 4;
+						content=content.substring(0,letter);
 					//Si no hay repeticiones ponemos ceros
 					}else {
 						stringCharCount="00";
@@ -44,15 +44,16 @@ public class CompressManager {
 					}
 					content+=stringCharCount+character;  
 				}	
-				letra+=4;
+				letter+=4;
 				tempCharacter=character;
 			}
 			content+="\n";
-			letra+=1;
+			letter+=1;
 			arrayList.add(content);
 		}
 		return arrayList;
 	}
+	
 	
 	//https://www.youtube.com/watch?v=7a4r3tIVtCE&t=319s
 	public String compress1digit(String text) {
@@ -77,7 +78,7 @@ public class CompressManager {
 		return sb.toString();
 	}
 	
-	private String descompress(String text) {
+	private String decompress(String text) {
 		StringBuilder sb=new StringBuilder();
 		for (int textindex=0;textindex<text.length();textindex++) {
 			if (Character.isDigit(text.charAt(textindex))) {

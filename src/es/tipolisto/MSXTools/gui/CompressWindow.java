@@ -41,14 +41,14 @@ public class CompressWindow extends JFrame implements ActionListener, DocumentLi
 
 	private JPanel contentPane;
 	private JLabel jLabelCompress;
-	private JLabel jLabelDescompress;
+	private JLabel jLabelDecompress;
 	private JLabel jLabelFileSelected;
 	private JLabel jLabelFileSave;
 	private JLabel jLabelNumberButesCompress;
 	private JLabel jLabelNumberButesDecompress;
 	
 	private JTextArea jTextAreaCompress;
-	private JTextArea jTextAreaDescompress;
+	private JTextArea jTextAreaDecompress;
 	
 	private JToggleButton toogleButtonCompress;
 	private JButton jButtonSsave;
@@ -90,9 +90,9 @@ public class CompressWindow extends JFrame implements ActionListener, DocumentLi
 		jLabelCompress.setBounds(10, 208, 165, 14);
 		contentPane.add(jLabelCompress);
 		
-		jLabelDescompress = new JLabel("Compress");
-		jLabelDescompress.setBounds(10, 437, 154, 14);
-		contentPane.add(jLabelDescompress);
+		jLabelDecompress = new JLabel("Compress");
+		jLabelDecompress.setBounds(10, 437, 154, 14);
+		contentPane.add(jLabelDecompress);
 		
 		
 		jLabelNumberButesCompress = new JLabel("");
@@ -115,11 +115,11 @@ public class CompressWindow extends JFrame implements ActionListener, DocumentLi
 		contentPane.add(jscrollPaneCompress);
 		jTextAreaCompress.getDocument().addDocumentListener(this);
 		
-		jTextAreaDescompress = new JTextArea();
-		jTextAreaDescompress.setBounds(10, 473, 586, 194);
+		jTextAreaDecompress = new JTextArea();
+		jTextAreaDecompress.setBounds(10, 473, 586, 194);
 		//jTextAreaDescompress.setLineWrap(true);
-		contentPane.add(jTextAreaDescompress);
-		JScrollPane jscrollPaneDescompress = new JScrollPane(jTextAreaDescompress);
+		contentPane.add(jTextAreaDecompress);
+		JScrollPane jscrollPaneDescompress = new JScrollPane(jTextAreaDecompress);
 		jscrollPaneDescompress.setBounds(10, 473, 586, 194);
 		contentPane.add(jscrollPaneDescompress);
 
@@ -146,16 +146,25 @@ public class CompressWindow extends JFrame implements ActionListener, DocumentLi
 				jFileChooser.setDialogTitle("Selecciona un archivo");
 				int result=jFileChooser.showSaveDialog(null);
 				if(result==JFileChooser.APPROVE_OPTION) {
-					JOptionPane.showConfirmDialog(null, "WIP");
-					/*String content="";
+					//JOptionPane.showConfirmDialog(null, "WIP");
+					String content="";
 					File fileOrigin=jFileChooser.getSelectedFile();
-					System.out.println("Vamos a ller el archivo "+fileOrigin.getAbsolutePath());
 					ArrayList<String> arrayList=fileManager.readFile(fileOrigin);
-					for (String value: arrayList) {
-						value=value.replace("$","\n");
-						jTextAreaDescompress.setText(value);
+					System.out.println("Let s read the file "+fileOrigin.getAbsolutePath());
+					
+					for (String value:arrayList) {
+						content +=value+"\n";
+						System.out.println(value);
 					}
-					jTextAreaCompress.setText(content);*/
+					jTextAreaCompress.setText(content);
+					ArrayList<String> values=compressManager.compress2Digits(content);
+					System.out.println("El tamaño es "+String.valueOf(values.size()));
+					String value=values.get(0);
+					System.out.println("El valor es "+value);
+					/*for (String value:values) {
+						jTextAreaDecompress.setText("hola"+value);
+					}*/
+					
 				}
 			}
 		});
@@ -189,15 +198,15 @@ public class CompressWindow extends JFrame implements ActionListener, DocumentLi
 			if (toogleButtonCompress.isSelected()) {
 				toogleButtonCompress.setText("Mode descompress");
 				jLabelCompress.setText("Test to descompress:");
-				jLabelDescompress.setText("Compress:");
+				jLabelDecompress.setText("Compress:");
 
 			}else {
 				toogleButtonCompress.setText("Mode compress");
 				jLabelCompress.setText("Test to compress:");
-				jLabelDescompress.setText("Descompress:");
+				jLabelDecompress.setText("Descompress:");
 			}
 			jTextAreaCompress.setText("");
-			jTextAreaDescompress.setText("");
+			jTextAreaDecompress.setText("");
 		}
 	}
 
@@ -211,9 +220,9 @@ public class CompressWindow extends JFrame implements ActionListener, DocumentLi
 		jLabelNumberButesDecompress.setText(String.valueOf(value.length()));
 		*/
 		//Compress 2 digits
-		ArrayList<String> values=compressManager.compress2digits(text);
+		ArrayList<String> values=compressManager.compress2Digits(text);
 		for (String value:values) {
-			jTextAreaDescompress.setText(value);
+			jTextAreaDecompress.setText(value);
 		}
 		jLabelNumberButesCompress.setText(String.valueOf(text.length()));
 		jLabelNumberButesDecompress.setText(String.valueOf(StringManager.getByteNumber(values)));
