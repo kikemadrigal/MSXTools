@@ -46,7 +46,7 @@ public class CSVTSXToHexWindow extends JFrame {
 	public CSVTSXToHexWindow() {
 		fileManager=new FileManager();
 		setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-		setBounds(100, 100, 463, 335);
+		setBounds(100, 100, 463, 377);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -62,15 +62,15 @@ public class CSVTSXToHexWindow extends JFrame {
 		contentPane.add(lblNewLabel_1);
 		
 		JLabel jLabelPathFileOrigin = new JLabel("");
-		jLabelPathFileOrigin.setBounds(10, 123, 427, 14);
+		jLabelPathFileOrigin.setBounds(10, 164, 427, 14);
 		contentPane.add(jLabelPathFileOrigin);
 		
 		JLabel lblNewLabel_2 = new JLabel("Enter the name of the output file or leave it blank to make it automatic");
-		lblNewLabel_2.setBounds(10, 144, 427, 14);
+		lblNewLabel_2.setBounds(10, 189, 427, 14);
 		contentPane.add(lblNewLabel_2);
 		
 		JLabel jLabelDestinyFile = new JLabel("");
-		jLabelDestinyFile.setBounds(10, 200, 427, 14);
+		jLabelDestinyFile.setBounds(10, 245, 427, 14);
 		contentPane.add(jLabelDestinyFile);
 		
 		jLabelDestinyFile.setText(fileManager.createFileDestiny().getAbsolutePath());
@@ -93,13 +93,13 @@ public class CSVTSXToHexWindow extends JFrame {
 				
 			}
 		});
-		jButtonSelectFileOrigin.setBounds(10, 89, 427, 23);
+		jButtonSelectFileOrigin.setBounds(10, 89, 427, 64);
 		contentPane.add(jButtonSelectFileOrigin);
 		
 
 		
 		jTextFieldNewNamedestinyFile = new JTextField();
-		jTextFieldNewNamedestinyFile.setBounds(10, 169, 427, 20);
+		jTextFieldNewNamedestinyFile.setBounds(10, 214, 427, 20);
 		contentPane.add(jTextFieldNewNamedestinyFile);
 		jTextFieldNewNamedestinyFile.setColumns(10);
 		
@@ -111,7 +111,7 @@ public class CSVTSXToHexWindow extends JFrame {
 				convert();
 			}
 		});
-		btnNewButton.setBounds(10, 228, 427, 57);
+		btnNewButton.setBounds(10, 270, 427, 57);
 		contentPane.add(btnNewButton);
 		
 

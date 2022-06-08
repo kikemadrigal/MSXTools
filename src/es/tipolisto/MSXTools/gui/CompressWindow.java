@@ -28,7 +28,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.InputMethodEvent;
 import java.awt.event.InputMethodListener;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.security.cert.Extension;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
 
@@ -39,6 +43,7 @@ import javax.swing.Action;
 
 public class CompressWindow extends JFrame implements ActionListener, DocumentListener{
 
+	//protected static final boolean String = false;
 	private JPanel contentPane;
 	private JLabel jLabelCompress;
 	private JLabel jLabelDecompress;
@@ -46,10 +51,8 @@ public class CompressWindow extends JFrame implements ActionListener, DocumentLi
 	private JLabel jLabelFileSave;
 	private JLabel jLabelNumberButesCompress;
 	private JLabel jLabelNumberButesDecompress;
-	
-	private JTextArea jTextAreaCompress;
 	private JTextArea jTextAreaDecompress;
-	
+	private JTextArea jTextAreaCompress;
 	private JToggleButton toogleButtonCompress;
 	private JButton jButtonSsave;
 	private JButton jButtonLoadFileHex;
@@ -103,7 +106,6 @@ public class CompressWindow extends JFrame implements ActionListener, DocumentLi
 		jLabelNumberButesDecompress.setBounds(147, 437, 183, 14);
 		contentPane.add(jLabelNumberButesDecompress);
 		
-	
 		
 		jTextAreaCompress = new JTextArea();
 		jTextAreaCompress.setBounds(10, 233, 586, 194);
@@ -133,7 +135,37 @@ public class CompressWindow extends JFrame implements ActionListener, DocumentLi
 		jButtonSsave = new JButton("Save");
 		jButtonSsave.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				JOptionPane.showConfirmDialog(null, "Not implement");
+				ArrayList<String> arrayList=new ArrayList<String>();
+				//Comprobamos que el campo a comprimir tenga datos
+				String text=jTextAreaCompress.getText();
+				if (!text.equals("") || text==null) {
+					//1.Seleccionamos el archivo destino
+					JFileChooser jFileChooser=new JFileChooser(System.getProperty("user.dir"));
+					jFileChooser.setDialogTitle("Selecciona un archivo");
+					int result=jFileChooser.showSaveDialog(null);
+					if(result==JFileChooser.APPROVE_OPTION) {
+						File fileOrigin=jFileChooser.getSelectedFile();
+						String fileDestinyPathParent=fileOrigin.getParent();
+						String fileDestinyName=fileOrigin.getName().substring(0,fileOrigin.getName().length())+"-rle16.txt";
+						String fileDestinyAbsolutePathParent=fileDestinyPathParent+"\\"+fileDestinyName;
+						File fileDestiny=new File(fileDestinyAbsolutePathParent);
+						//2.Obtenemos todos las líneas
+						//String text=jTextAreaCompress.getText();
+						String[] lines=text.split("\n");
+						//String contentCompress="";
+						for (String value:lines) {
+							value=value.replace("\n", "");
+							String temp=compressManager.compressManagerLine2Digits(value);
+							arrayList.add(temp);
+						}
+						fileManager.writeFile(fileDestiny, arrayList);
+						JOptionPane.showMessageDialog(null, "File created.");
+					}
+				}else {
+					JOptionPane.showMessageDialog(null, "The compress field is empty.");
+				}
+				
+				
 			}
 		});
 		jButtonSsave.setBounds(10, 132, 165, 32);
@@ -142,28 +174,39 @@ public class CompressWindow extends JFrame implements ActionListener, DocumentLi
 		jButtonLoadFileHex = new JButton("Load file Hex");
 		jButtonLoadFileHex.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				ArrayList<String> arrayList=new ArrayList<String>();
 				JFileChooser jFileChooser=new JFileChooser(System.getProperty("user.dir"));
 				jFileChooser.setDialogTitle("Selecciona un archivo");
 				int result=jFileChooser.showSaveDialog(null);
 				if(result==JFileChooser.APPROVE_OPTION) {
 					//JOptionPane.showConfirmDialog(null, "WIP");
 					String content="";
+					String contentCompress="";
 					File fileOrigin=jFileChooser.getSelectedFile();
-					ArrayList<String> arrayList=fileManager.readFile(fileOrigin);
-					System.out.println("Let s read the file "+fileOrigin.getAbsolutePath());
-					
-					for (String value:arrayList) {
-						content +=value+"\n";
-						System.out.println(value);
+					String fileName=fileOrigin.getName();
+					String extension=fileName.substring(fileName.length()-8, fileName.length());
+					if (!extension.equals("-hex.txt")) {
+						JOptionPane.showMessageDialog(null,"You have to go to the main menu and click on CSV/TSX to Hex");
+						System.out.println(extension);
+					}else {
+						try {
+							arrayList=fileManager.readFileFromCompressWindow(fileOrigin);
+							for (String string:arrayList) {
+								content+=string;
+								//System.out.println(string);
+								String temp=compressManager.compressManagerLine2Digits(string);
+								contentCompress+=temp;
+							}
+							jTextAreaCompress.setText(content);
+							jTextAreaDecompress.setText(contentCompress);
+						} catch (IOException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
 					}
-					jTextAreaCompress.setText(content);
-					ArrayList<String> values=compressManager.compress2Digits(content);
-					System.out.println("El tamaño es "+String.valueOf(values.size()));
-					String value=values.get(0);
-					System.out.println("El valor es "+value);
-					/*for (String value:values) {
-						jTextAreaDecompress.setText("hola"+value);
-					}*/
+					
+
+					
 					
 				}
 			}
@@ -220,12 +263,16 @@ public class CompressWindow extends JFrame implements ActionListener, DocumentLi
 		jLabelNumberButesDecompress.setText(String.valueOf(value.length()));
 		*/
 		//Compress 2 digits
-		ArrayList<String> values=compressManager.compress2Digits(text);
-		for (String value:values) {
-			jTextAreaDecompress.setText(value);
+		String[] lines=text.split("\n");
+		String contentCompress="";
+		for (String value:lines) {
+			String temp=compressManager.compressManagerLine2Digits(value);
+			contentCompress+=temp;
+			jTextAreaDecompress.setText(contentCompress+"\n");
 		}
+		
 		jLabelNumberButesCompress.setText(String.valueOf(text.length()));
-		jLabelNumberButesDecompress.setText(String.valueOf(StringManager.getByteNumber(values)));
+		jLabelNumberButesDecompress.setText(String.valueOf(contentCompress.length()));
 		
 	}
 

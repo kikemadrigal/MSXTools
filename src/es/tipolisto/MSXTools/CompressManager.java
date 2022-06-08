@@ -32,8 +32,10 @@ public class CompressManager {
 					//Si los dígitos son los anteriores aumentamos el contador de repeticiones (charCount)
 					if (tempCharacter.equals(character)) {		
 						charCount++;
-						if (charCount<9) stringCharCount="0"+String.valueOf(charCount);
-						else stringCharCount=String.valueOf(charCount);
+						String number=NumberManager.decimalAHexadecimal(charCount);
+						if (number.length()==1) stringCharCount="0"+number;
+						else stringCharCount=number;
+						//else stringCharCount=String.valueOf(charCount);
 						//Quitamos la parte antigua del string (por ejemplo:0013 ya que ahora es 0113)
 						letter -= 4;
 						content=content.substring(0,letter);
@@ -52,6 +54,42 @@ public class CompressManager {
 			arrayList.add(content);
 		}
 		return arrayList;
+	}
+	
+	public String compressManagerLine2Digits(String text) {
+		String content="";
+		String tempCharacter="";	
+		String character="";
+		String stringCharCount="00";
+		int charCount=0;
+		int letter=0;
+		//Vamos recorriendo de 2 en 2 letras del string
+		for (int textIndex = 0;textIndex < text.length()-1;textIndex=textIndex+2) {
+			//Obtenemos los 2 dígitos
+			character=text.substring(textIndex,textIndex+2);
+			//Si los dígitos son los anteriores aumentamos el contador de repeticiones (charCount)
+			if (tempCharacter.equals(character)) {		
+				charCount++;
+				String number=NumberManager.decimalAHexadecimal(charCount);
+				if (number.length()==1) stringCharCount="0"+number;
+				else stringCharCount=number;
+				//else stringCharCount=String.valueOf(charCount);
+				//Quitamos la parte antigua del string (por ejemplo:0013 ya que ahora es 0113)
+				letter -= 4;
+				content=content.substring(0,letter);
+			//Si no hay repeticiones ponemos ceros
+			}else {
+				stringCharCount="00";
+				charCount=0;
+			}
+			content+=stringCharCount+character;  
+			letter+=4;
+			tempCharacter=character;
+		}
+		content+='\n';
+		letter+=1;
+		//System.out.println(content);
+		return content;
 	}
 	
 	
